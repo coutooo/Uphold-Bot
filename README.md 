@@ -1,0 +1,9 @@
+
+---Requirements---
+npm install axios
+npm install commander
+------------------
+
+--------RUN-------
+node upholdbot.js
+------------------
