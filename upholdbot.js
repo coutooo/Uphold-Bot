@@ -1,18 +1,36 @@
 const axios = require('axios');
 const program = require('commander');
 
-
-program
+  program
   .option('-c, --currencyPairs <pairs>', 'Comma-separated list of currency pairs', 'BTC-USD,ETH-USD,XRP-USD')
-  .option('-i, --fetchInterval <interval>', 'Fetch interval in milliseconds', parseInt, 5000)
-  .option('-p, --priceOscillation <percentage>', 'Price oscillation percentage for alerts', parseFloat, 0.01)
+  .option('-i, --fetchIntervals <intervals>', 'Comma-separated list of fetch intervals in milliseconds', '5000')
+  .option('-p, --priceOscillations <percentages>', 'Comma-separated list of price oscillation percentages for alerts', '0.01')
   .parse(process.argv);
 
-const currencyPairs = (program.currencyPairs || 'BTC-USD,ETH-USD,XRP-USD').split(',');
-const fetchInterval = parseInt(program.fetchInterval) || 5000;
-const priceOscillation = parseFloat(program.priceOscillation) || 0.01;
+// Parse the currency pairs
+
+const options = program.opts();
+
+const currencyPairs = options.currencyPairs ? options.currencyPairs.split(',') : [];
+const fetchIntervals = options.fetchIntervals ? options.fetchIntervals.split(',') : [];
+const priceOscillations = options.priceOscillations ? options.priceOscillations.split(',') : [];
 const apiUrl = 'https://api.uphold.com/v0/ticker/';
 const lastRates = {};
+const currencyInterval = {};
+const currencyOscillations = {};
+
+// check if all arguments have the same size
+if (currencyPairs.length !== fetchIntervals.length || currencyPairs.length !== priceOscillations.length) {
+    console.error('The number of currency pairs, fetch intervals and price oscillations must be the same.');
+    console.log('options: ', options);
+    process.exit(1);
+}
+
+// for each currency set the interval and oscillation
+currencyPairs.forEach((currencyPair, index) => {
+    currencyInterval[currencyPair] = fetchIntervals[index];
+    currencyOscillations[currencyPair] = priceOscillations[index];
+});
 
 function fetchTickerData(currencyPair) {
     axios.get(apiUrl + currencyPair)
@@ -25,8 +43,8 @@ function fetchTickerData(currencyPair) {
             if (lastRates[currencyPair] !== undefined) {
                 const rateChangePercentage = calculatePercentageChange(lastRates[currencyPair], currentRate);
 
-                if (Math.abs(rateChangePercentage) >= priceOscillation) {
-                    // ALERT print to changes bigger/smaller than 0.01%
+                if (Math.abs(rateChangePercentage) >= currencyOscillations[currencyPair]) {
+                    // ALERT print to changes bigger/smaller than priceOscillations
                     console.log('➡️ ➡️ ➡️ ➡️ ➡️ ➡️ ➡️   ALERT    ')
                     console.log(`➡️  ${currencyPair} Rate changed by ${rateChangePercentage.toFixed(2)}% `); // ⬅️⬇️ ⬇️ ⬇️ ⬇️ ⬇️ ⬇️ ⬇️⬆️ ⬆️ ⬆️ ⬆️ ⬆️ ⬆️ ⬆️
                     console.log('➡️ ➡️ ➡️ ➡️ ➡️ ➡️ ➡️   ALERT    ')
@@ -37,12 +55,12 @@ function fetchTickerData(currencyPair) {
             lastRates[currencyPair]  = currentRate;
 
             // Schedule the next fetch
-            //setTimeout(fetchTickerData, fetchInterval);
+            //setTimeout(fetchTickerData, fetchIntervals);
         })
         .catch(error => {
             console.error('Error fetching ticker data:', error.response ? error.response.data : error.message);
             // Retry after the fetch interval in case of an error
-            setTimeout(fetchTickerData, fetchInterval);
+            setTimeout(fetchTickerData, currencyInterval[currencyPair]);
         });
 }
 
@@ -50,10 +68,8 @@ function calculatePercentageChange(oldValue, newValue) {
     return ((newValue - oldValue) / oldValue) * 100;
 }
 
-// Start fetching ticker data
-//fetchTickerData();
-
 // Start fetching ticker data for each currency pair
 currencyPairs.forEach(currencyPair => {
-    setInterval(() => fetchTickerData(currencyPair), fetchInterval);
-  });
+    setInterval(() => fetchTickerData(currencyPair), currencyInterval[currencyPair]);
+});
+

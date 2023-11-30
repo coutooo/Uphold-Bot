@@ -1,9 +1,18 @@
 
----Requirements---
+------Requirements------
 npm install axios
 npm install commander
-------------------
+------------------------
 
---------RUN-------
-node upholdbot.js
-------------------
+------------------------------------Arguments instructions---------------------------------------------------------
+
+-c, --currencyPairs <pairs>', 'Comma-separated list of currency pairs', 'BTC-USD,ETH-USD,XRP-USD'
+-i, --fetchIntervals <intervals>', 'Comma-separated list of fetch intervals in milliseconds', '5000'
+-p, --priceOscillations <percentages>', 'Comma-separated list of price oscillation percentages for alerts', '0.01'
+-------------------------------------------------------------------------------------------------------------------
+
+--------------------------------------RUN--------------------------------
+node upholdbot.js -c <pairs> -i <intervals> -p <percentages>
+
+example: node upholdbot.js -c XRP-USD,BTC-USD,ETH-USD -i 5000,10000,7000 -p 0.01,0.05,0.03
+-------------------------------------------------------------------------
