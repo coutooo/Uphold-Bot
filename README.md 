@@ -2,7 +2,27 @@
 ------Requirements------
 npm install axios
 npm install commander
+npm install --save-dev jest
+npm install pg-promise
+
+Install PostgreSQL
 ------------------------
+
+
+------------Docker------------
+# Define the command to run your application
+CMD [ "node", "upholdbot.js", "-c", "XRP-USD,BTC-USD,ETH-USD", "-i", "5000,10000,7000", "-p", "0.01,0.05,0.03" ]
+
+change the last line on Dockerfile to change arguments.
+
+docker build -t uphold-bot .
+sudo docker-compose up --build
+
+if no logs go to other terminal and type:
+sudo docker-compose logs -f uphold-bot
+
+to close
+sudo docker-compose down
 
 ------------------------------------Arguments instructions---------------------------------------------------------
 
@@ -11,8 +31,32 @@ npm install commander
 -p, --priceOscillations <percentages>', 'Comma-separated list of price oscillation percentages for alerts', '0.01'
 -------------------------------------------------------------------------------------------------------------------
 
---------------------------------------RUN--------------------------------
+--------------------------------------RUN (without docker)--------------------------------
+in PostgreSQL
+
+CREATE DATABASE upholdb;
+
+CREATE TABLE alerts (
+    id SERIAL PRIMARY KEY,
+    currency_pair VARCHAR(10),
+    rate_change_percentage NUMERIC,
+    alert_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    configuration JSON
+);
+
+change this line accordly in upholdbot.js:
+const db = pgp('postgres://upholdb:upholdb@localhost:5432/upholdb'); // Replace with your PostgreSQL connection details
+
 node upholdbot.js -c <pairs> -i <intervals> -p <percentages>
 
 example: node upholdbot.js -c XRP-USD,BTC-USD,ETH-USD -i 5000,10000,7000 -p 0.01,0.05,0.03
 -------------------------------------------------------------------------
+
+------TEST (jest)----------
+ npm test
+ (still need to handle setInterval and faketimers..)
+--------------------------
+
+
+
+

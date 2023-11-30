@@ -1,0 +1,18 @@
+version: '3'
+services:
+  uphold-bot:
+    image: uphold-bot:latest
+    environment:
+      POSTGRES_USER: upholdb
+      POSTGRES_PASSWORD: upholdb
+      POSTGRES_DB: upholdb
+    depends_on:
+      - db
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: upholdb
+      POSTGRES_PASSWORD: upholdb
+      POSTGRES_DB: upholdb
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
