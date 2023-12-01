@@ -24,6 +24,11 @@ sudo docker-compose logs -f uphold-bot
 to close
 sudo docker-compose down
 
+to check db
+sudo docker exec -it upholdbot-db-1 psql -U upholdb -d upholdb
+SELECT * FROM alerts;
+
+
 ------------------------------------Arguments instructions---------------------------------------------------------
 
 -c, --currencyPairs <pairs>', 'Comma-separated list of currency pairs', 'BTC-USD,ETH-USD,XRP-USD'
