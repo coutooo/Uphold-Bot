@@ -10,12 +10,13 @@ npm install --save-dev jest
 npm install pg-promise
 
 Install PostgreSQL
-Optional Docker
+(Optional) Docker
+
 ------------------------
 
 
 ------------Docker------------
-# Modify command arguments in the Dockerfile, as you wish:
+Modify command arguments in the Dockerfile, as you wish:
 
 CMD [ "node", "upholdbot.js", "-c", "XRP-USD,BTC-USD,ETH-USD", "-i", "5000,10000,7000", "-p", "0.01,0.05,0.03" ]
 
@@ -35,7 +36,7 @@ SELECT * FROM alerts;
 To stop and remove the containers:
 sudo docker-compose down
 
-------------------------------------Arguments instructions---------------------------------------------------------
+------------------------------------#Arguments instructions---------------------------------------------------------
 
 -c, --currencyPairs <pairs>', 'Comma-separated list of currency pairs', 'BTC-USD,ETH-USD,XRP-USD'
 -i, --fetchIntervals <intervals>', 'Comma-separated list of fetch intervals in milliseconds', '5000'
