@@ -15,7 +15,7 @@ Optional Docker
 
 
 ------------Docker------------
-# Modify command arguments in the Dockerfile:
+# Modify command arguments in the Dockerfile, as you wish:
 
 CMD [ "node", "upholdbot.js", "-c", "XRP-USD,BTC-USD,ETH-USD", "-i", "5000,10000,7000", "-p", "0.01,0.05,0.03" ]
 
@@ -55,7 +55,7 @@ CREATE TABLE alerts (
     configuration JSON
 );
 
-change this line accordly in upholdbot.js:
+change this line accordingly in upholdbot.js:
 const db = pgp('postgres://upholdb:upholdb@localhost:5432/upholdb'); // Replace with your PostgreSQL connection details
 
 node upholdbot.js -c <pairs> -i <intervals> -p <percentages>
