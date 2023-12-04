@@ -1,6 +1,6 @@
 # Uphold Bot
 
-Uphold Bot is a Node.js application that monitors cryptocurrency prices and triggers alerts based on specified conditions. It uses PostgreSQL as its database to store alerts.
+Uphold Bot is a Node.js application, using UpHold API, that monitors cryptocurrency prices and triggers alerts based on specified conditions. It uses PostgreSQL as its database to store alerts.
 
 ## Requirements
 
